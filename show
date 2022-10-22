@@ -1,0 +1,96 @@
+#!/bin/bash
+
+#To display text files on terminal
+
+#-n
+#   string is not null.
+#-z
+#  string is null, that is, has zero length
+
+if [ -n "$1" ]; then
+	echo "Must give atleast one file"
+	exit 1
+fi
+
+#takes text from file and displays it
+display(){
+clear
+#hide the cursor
+tput civis
+#get number of columns in terminal emulator window
+#To set an environment variable: COLUMNS=`tput cols` export COLUMNS
+cols = "$(tput cols)"
+#display text from file and justify to fit window
+#fold – Wrap each line to a specified length
+#-w width Set width of the line number field to width. The default is 6.
+#-s string Add string to the end of each line number to create a separator. The
+#default is a single tab character.
+fold -w $cols -s "$FILE"
+ 
+#check for error and exit if there is one 
+#Make cursor normal (undo `cvvis' & `civis)'
+if[ "$?" != '0' ]; then
+	echo "Something went wrong, exiting" >&2
+	tput cnorm
+	exit 1
+fi
+
+#get next file or exit display function on key press
+#The two most prominent are -n, which
+#numbers lines, and -s, which suppresses the output of multiple blank lines
+#Use the -n option and provide a number to set the character limit
+#read -n 3
+read -n 1 -s
+
+}
+
+show-help(){
+less << _EOF_
+ Show -- Terminal Text Display Tool (Version 1.0)
+ Help Page -- Press 'q' to exit.
+ Show displays text files in a terminal and formats to the terminal emulator
+ display window but adds no other characters on the screen. Show is great for
+ screencasts and presentations.
+ Commands:
+    show file1.txt file2.txt file3.txt (...more files) = display the contents
+    of each file one at a time.
+    show --help = shows this help page.
+    You can give show as many files to work with as you like, just list one
+    after another in the order you'd like to display them. Pressing any key
+    will advance to the next file. The screen will be cleared but the user can
+    scroll up to see the contents of the last file displayed. Pressing any key
+    after the files have all been displayed will add a line to the bottom of
+    the screen letting you know that there are no more files. Press any key
+    once again to clear the screen and exit the program.
+    Note: You must give show at least one file name to work with or it exits
+    with an error.
+_EOF_
+
+}
+
+# Execution.
+
+# Display help page:
+
+if [ "$1" == "--help" ]; then
+    show-help
+    exit
+fi
+
+# Start displaying file(s):
+for FILE in "$@"
+	do
+	  display
+	done
+
+#tell user there are no more files on key press
+
+echo "--No more file--"
+
+#exit on key press
+
+read -n 1 -s
+tput cnorm
+clear 
+exit 
+read -n 3

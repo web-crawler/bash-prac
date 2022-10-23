@@ -1,0 +1,16 @@
+#!/bin/bash
+
+#scans for ports (no user input)
+
+nmap -sT 172.26.63.14 -p 3306 > /dev/null  -oG MySQLscan
+
+#/dev/null ->
+#We’re doing this on a local machine,so it doesn’t matter so much, 
+#but if you were to use the script remotely, you’dwant to hide the nmap output.
+
+#-oG -> We then send the output of the scan to a file
+#named MySQLscan in a grep-able format, meaning a format that grep can work on
+
+cat MySQLscan | grep Up > MySQLscan2
+ echo "SCAN COMPLETE"
+

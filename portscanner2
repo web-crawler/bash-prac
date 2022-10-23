@@ -1,0 +1,19 @@
+#!/bin/bash
+
+#port scanner scanning lan ports
+
+echo "enter first IP"
+read firstIP
+
+echo "enter the last octet of last IP"
+read lastOctetIP
+
+echo "enter port number you want to scan"
+read port
+
+nmap -sT $firstIP-$lastOctetIP -p $port > /dev/null -oG MySQLscan
+
+cat MySQLscan | grep Up > MySQLscan2
+
+cat MySQLscan | grep closed > MySQLscan3
+
